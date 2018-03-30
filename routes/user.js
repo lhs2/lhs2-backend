@@ -48,13 +48,29 @@ MongoClient.connect(url, function(err,database){
             }
             else{
               console.log(result)
-              res.status(200).json({message: "ERROR_INSERT_DATABASE", data: result})
+              res.status(500).json({message: "ERROR_INSERT_DATABASE", data: result})
             }
           })
         }
         else {
           res.status(400).json({message: "MISSING_FIELDS"});
         }
+  });
+
+  router.post('/available', function(req, res, next) {
+    var login = req.body.login
+    if(login) {
+      db.collection("user").findOne({login: login}, function(err, result) {
+        if(result) {
+          res.status(400).json({message: "NOT_AVAILABLE"});
+        } else {
+          res.status(200).json({message: "USER_AVAILABLE"});
+        }
+      })
+    }
+    else{
+      res.status(400).json({message: "MISSING_FIELDS"});
+    }
   });
 
 })
