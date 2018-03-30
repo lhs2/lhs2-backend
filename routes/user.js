@@ -33,6 +33,30 @@ MongoClient.connect(url, function(err,database){
       }
     })
   });
+
+  router.post('/register', function(req,res, next) {
+    var login = req.body.login,
+        password = req.body.password,
+        email = req.body.email,
+        username = req.body.username;
+
+        if(login && password && email && username) {
+          db.collection("user").insertOne({login: login, password: password, email: email, username: username}, function(err,result){
+            if(result){
+              console.log(result)
+              res.status(200).json({message: "SUCESS", data: result})
+            }
+            else{
+              console.log(result)
+              res.status(200).json({message: "ERROR_INSERT_DATABASE", data: result})
+            }
+          })
+        }
+        else {
+          res.status(400).json({message: "MISSING_FIELDS"});
+        }
+  });
+
 })
 /* GET users listing. */
 
